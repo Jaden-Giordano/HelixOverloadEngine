@@ -58,16 +58,20 @@ public class FileHandler {
 	 * @return
 	 * @throws IOException
 	 */
-	public static int[][] LoadTileData(String path, int width) throws IOException {
+	public static int[][] LoadTileData(String path) throws IOException {
 		
 		String[] lines = OpenFile(System.getProperty("user.dir")+path+".MAP");
 		
-		String[][] parts = new String[lines.length][width];
-		for (int j = 0; j < lines.length; j++) {
-			parts[j] = lines[j].split("\\s");
+		String[] WH = lines[0].split(",");
+		int iWidth = Integer.parseInt(WH[0]);
+		int iHeight = Integer.parseInt(WH[1]);
+		
+		String[][] parts = new String[iHeight][iWidth];
+		for (int j = 1; j < parts.length+1; j++) {
+			parts[j-1] = lines[j].split("\\s");
 		}
 			
-		int[][] worldData = new int[width][lines.length];
+		int[][] worldData = new int[iWidth][iHeight];
 		for (int j = 0; j < parts.length; j++) {
 			for (int i = 0; i < parts[j].length; i++) {
 				worldData[i][j] = Integer.parseInt(parts[j][i]);

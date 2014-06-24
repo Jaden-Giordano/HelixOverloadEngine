@@ -4,32 +4,27 @@ import java.io.IOException;
 import java.util.ArrayList;
 
 import org.lwjgl.input.Keyboard;
-import org.newdawn.slick.SpriteSheet;
+import org.lwjgl.input.Mouse;
 
-import com.base.engine.Animation;
-import com.base.engine.Camera;
 import com.base.engine.World;
-import com.base.engine.gameobject.PlayableCharacter;
 import com.base.handlers.FileHandler;
 import com.base.handlers.GuiHandler;
 import com.base.handlers.Input;
 
 public class Game {
 	
-	ArrayList<World> worlds;
-	int currentWorld;
+	private static ArrayList<World> worlds;
+	static int currentWorld;
 	
-	Camera cam;
+	private static int debugState;
 	
-	private static boolean[] debugState;
-	
+	/**
+	 * Creates new game
+	 * @throws IOException
+	 */
 	public Game() throws IOException {
 		worlds = new ArrayList<World>();
-		debugState = new boolean[2];
-		for (int i = 0; i < debugState.length; i++) {
-			debugState[i] = false;
-		}
-		debugState[0] = true;
+		debugState = 0;
 		
 		LoadWorlds();
 	}
@@ -39,53 +34,77 @@ public class Game {
 	 * @throws IOException
 	 */
 	private void LoadWorlds() throws IOException {
-		World test = new World(FileHandler.LoadTileData("/assets/worlds/test", 4));
-		World test2 = new World(FileHandler.LoadTileData("/assets/worlds/largetest", 26));
+		World test2 = new World(FileHandler.LoadTileData("/assets/worlds/test/largetest"), FileHandler.LoadTileData("/assets/worlds/test/objtest"));
+		World hi = new World(FileHandler.LoadTileData("/assets/worlds/Hi/hi"), FileHandler.LoadTileData("/assets/worlds/test/objtest"));
 		
-		worlds.add(test);
 		worlds.add(test2);
+		worlds.add(hi);
 		
-		currentWorld = 1;
-		
-		worlds.get(currentWorld).AddPlayableCharacter(new PlayableCharacter(0, 0, new Animation(new SpriteSheet(FileHandler.LoadImage("/assets/animsets/player.png"), 32, 32))));
-		
-		GuiHandler.AddMessage("To Aidan", "Aidan why you gotta be so busy all the time??? Like come on..........");
+		currentWorld = 0;
 	}
 
+	/**
+	 * Gets input
+	 */
 	public void GetInput() {
-		while(Keyboard.next()) {
+		while(Keyboard.next() || Mouse.next()) {
 			worlds.get(currentWorld).GetInput();
 			GuiHandler.GetInput();
-			if (Input.KeyPressed(Keyboard.KEY_2) && !debugState[1]) {
+			if (Input.KeyPressed(Keyboard.KEY_2) && debugState != 0) {
 				SetDebugState(1);
 			}
-			if (Input.KeyPressed(Keyboard.KEY_1) && !debugState[0]) {
+			if (Input.KeyPressed(Keyboard.KEY_1) && debugState != 1) {
 				SetDebugState(0);
+			}
+			if (Input.KeyPressed(Keyboard.KEY_3)) {
+				currentWorld = 0;
+			}
+			if (Input.KeyPressed(Keyboard.KEY_4)) {
+				currentWorld = 1;
 			}
 		}
 	}
-	
-	int index = 0;
+	/**
+	 * Updates
+	 */
 	public void Update() {
-		index++;
 		worlds.get(currentWorld).Update();
-		//worlds.get(currentWorld).AddPlayableCharacter(new PlayableCharacter(index, index%100, new Animation(new SpriteSheet(FileHandler.LoadImage("/assets/animsets/player.png"), 32, 32))));
 	}
 	
+	/**
+	 * Renders
+	 */
 	public void Draw() {
 		worlds.get(currentWorld).Draw();
 	}
 	
-	public static boolean IsInIDMode() {
-		return debugState[1];
+	/**
+	 * returns the current debug mode
+	 * @return
+	 */
+	public static int IsInIDMode() {
+		return debugState;
 	}
 	
-	public static void SetDebugState(int s) {
-		for (int i = 0; i < debugState.length; i++) {
-			debugState[i] = false;
-		}
-		debugState[s] = true;
-		GuiHandler.AddMessage("Debug State set to: "+String.valueOf(s));
+	/**
+	 * Sets the debug state to the given state
+	 * @param s
+	 */
+	public static void SetDebugState(int state) {
+		debugState = state;
+		GuiHandler.AddMessage("Debug State set to: "+String.valueOf(state));
+	}
+	
+	/**
+	 * returns the current loaded and open world
+	 * @return
+	 */
+	public static World GetCurrentWorld() {
+		return worlds.get(currentWorld);
+	}
+	
+	public static void SetCurrentWorld(int destWorldId) {
+		currentWorld = destWorldId;
 	}
 	
 }

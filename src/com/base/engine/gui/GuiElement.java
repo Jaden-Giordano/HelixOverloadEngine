@@ -4,6 +4,11 @@ public class GuiElement {
 	
 	float x, y;
 
+	/**
+	 * Creates a new Gui Element with starting x, y position
+	 * @param x
+	 * @param y
+	 */
 	public GuiElement(float x, float y) {
 		this.x = x;
 		this.y = y;
@@ -21,16 +26,4 @@ public class GuiElement {
 		
 	}
 	
-	public boolean IsMessageBox() {
-		return false;
-	}
-	
-	public boolean IsMessageComplete() {
-		return false;
-	}
-	
-	public void DisplayEntireMessage() {
-		
-	}
-
 }

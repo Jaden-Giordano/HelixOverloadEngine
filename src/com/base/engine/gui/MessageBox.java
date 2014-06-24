@@ -9,9 +9,9 @@ import com.base.handlers.FileHandler;
 
 public class MessageBox extends GuiElement {
 	
-	private static final int CHARS_PER_LINE = 100;
+	private static final int WORDS_PER_LINE = 14;
 	private static final int LINES = 3;
-	private static final int UPDATE_TIME = 80;
+	private static final int UPDATE_TIME = 40;
 	
 	private Timer timer = new Timer();
 	
@@ -27,7 +27,7 @@ public class MessageBox extends GuiElement {
 	private boolean messageComplete = false;
 
 	/**
-	 * Creates new message box
+	 * Creates new message box with given message
 	 * @param displayTime in milliseconds
 	 * @param message
 	 */
@@ -43,11 +43,11 @@ public class MessageBox extends GuiElement {
 	}
 	
 	/**
-	 * Creates new message box with custom title
+	 * Creates new message box with custom title and given message
 	 * @param title
 	 * @param message
 	 */
-	public MessageBox(String title, String message) {
+	public MessageBox(String message, String title) {
 		super(0, 0);
 		this.message = message;
 		this.title = title;
@@ -60,25 +60,34 @@ public class MessageBox extends GuiElement {
 	}
 	
 	/**
-	 * Splits message into lines
+	 * Splits the message into lines then characters
 	 */
 	private void SplitMessage() {
-		char[] textsplitMessage = message.toCharArray();
+		String[] words = message.split("\\s");
 		
 		int jIndex = 0;
-		splitMessage = new char[LINES][CHARS_PER_LINE];
-		for (int i = 0; i < textsplitMessage.length; i++) {
-			if (i >= CHARS_PER_LINE && i%CHARS_PER_LINE == 0) {
+		String[] lines = new String[LINES];
+		for (int j = 0; j < lines.length; j++) {
+			lines[j] = "";
+		}
+		for (int i = 0; i < words.length; i++) {
+			if (i != 0 && i%WORDS_PER_LINE == 0) {
 				jIndex++;
 			}
-			if (jIndex >= 3) {
-				jIndex = 0;
-				break;
+			if (words[i] == null) {
+				words[i] = "";
 			}
-			splitMessage[jIndex][i%CHARS_PER_LINE] = textsplitMessage[i];
+			lines[jIndex] += words[i]+" ";
 		}
 		
-		for (int j = 0; j < finalMessage.length; j++) {
+		for (int j = 0; j < lines.length; j++) {
+			if (lines[j] == null) {
+				lines[j] = "";
+			}
+		}
+		splitMessage = new char[LINES][];
+		for (int j = 0; j < splitMessage.length; j++) {
+			splitMessage[j] = lines[j].toCharArray();
 			if (finalMessage[j] == null) {
 				finalMessage[j] = "";
 			}
@@ -86,8 +95,7 @@ public class MessageBox extends GuiElement {
 	}
 	
 	/**
-	 * Does nothing, but would update the amount of text shown in the message.
-	 * still in progress
+	 * Updates the amount of text shown, and if a letter update
 	 */
 	int amtOfTextShown = 0;
 	boolean update = true;
@@ -97,28 +105,49 @@ public class MessageBox extends GuiElement {
 		}
 		if (!messageComplete) {
 			if (update) {
-				int linesShown = amtOfTextShown/CHARS_PER_LINE;
-				for (int j = 0; j < linesShown+1; j++) {
-					if (finalMessage[j] == null) {
-						finalMessage[j] = "";
+				int oneshown = splitMessage[0].length;
+				int twoshown = splitMessage[0].length + splitMessage[1].length;
+				int threeshown = splitMessage[0].length + splitMessage[1].length+splitMessage[2].length;
+				
+				int linesShown = 1;
+				if (amtOfTextShown > oneshown && amtOfTextShown <= twoshown) {
+					linesShown = 2;
+				}
+				if (amtOfTextShown > twoshown && amtOfTextShown <= threeshown) {
+					linesShown = 3;
+				}
+				
+				for (int j = 0; j < linesShown; j++) {
+					if ((amtOfTextShown >= oneshown && j == 0) || (amtOfTextShown >= twoshown && j == 1)) {
+						continue;
 					}
-					if ((amtOfTextShown >= CHARS_PER_LINE && j == 0)) {
-						j++;
-						if (amtOfTextShown >= CHARS_PER_LINE*2 && (j == 0 || j == 1)) {
-							j = 2;
-						}
+					
+					if ((amtOfTextShown >= threeshown && j == 2)) {
+						DisplayEntireMessage();
+						break;
 					}
-					finalMessage[j] += String.valueOf(splitMessage[j][amtOfTextShown%CHARS_PER_LINE]);
+					
+					if (j == 1) {
+						finalMessage[j] += String.valueOf(splitMessage[j][amtOfTextShown-oneshown-1%(splitMessage[j-1].length+1)]);
+					}
+					else if (j == 2) {
+						finalMessage[j] += String.valueOf(splitMessage[j][amtOfTextShown-twoshown-1%(splitMessage[j-1].length+1)]);
+					}
+					else {
+						finalMessage[j] += String.valueOf(splitMessage[j][amtOfTextShown%(splitMessage[j].length+1)]);
+					}
 				}
 				update = false;
 			}
-			
 			double timeSinceLetterUpdate = timer.GetElapsedTime();
 			if (timeSinceLetterUpdate > UPDATE_TIME) {
 				amtOfTextShown++;
 				timer.Start();
 				update = true;
 			}
+		}
+		if (messageComplete) {
+			DisplayEntireMessage();
 		}
 	}
 	
@@ -147,14 +176,25 @@ public class MessageBox extends GuiElement {
 		timer.Start();
 	}
 	
+	/**
+	 * returns the message
+	 * @return
+	 */
 	public String GetText() {
 		return this.message;
 	}
 	
+	/**
+	 * returns if the message is complete
+	 * @return
+	 */
 	public boolean IsMessageComplete() {
 		return this.messageComplete;
 	}
 	
+	/**
+	 * Displays the entire message
+	 */
 	public void DisplayEntireMessage() {
 		for (int j = 0; j < finalMessage.length; j++) {
 			finalMessage[j] = String.valueOf(splitMessage[j]);

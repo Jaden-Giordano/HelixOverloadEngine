@@ -24,6 +24,7 @@ import java.io.IOException;
 
 import org.lwjgl.LWJGLException;
 import org.lwjgl.input.Keyboard;
+import org.lwjgl.input.Mouse;
 import org.lwjgl.opengl.Display;
 import org.lwjgl.opengl.DisplayMode;
 import org.newdawn.slick.SlickException;
@@ -36,7 +37,6 @@ public class Main {
 	
 	public static final int SCREEN_WIDTH = 800;
 	public static final int SCREEN_HEIGHT = 600;
-	public static final float ASPECT = SCREEN_WIDTH/SCREEN_HEIGHT;
 	
 	private static Game game;
 	
@@ -60,6 +60,7 @@ public class Main {
 		Display.setVSyncEnabled(true);
 		Display.setTitle("BTK");
 		Keyboard.create();
+		Mouse.create();
 	}
 
 	/**
@@ -95,7 +96,7 @@ public class Main {
 		Registry.Add(FileHandler.GetFont("/assets/fonts/Ubuntu-B.ttf", 19f));
 		GuiHandler.Init();
 		game = new Game();
-		GuiHandler.AddMessage("Game Log", "Loading Complete");
+		GuiHandler.AddMessage("Loading Complete", "Game Log");
 	}
 
 	private static void GameLoop() throws SlickException {

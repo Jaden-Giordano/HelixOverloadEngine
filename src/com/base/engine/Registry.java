@@ -16,6 +16,11 @@ public class Registry {
 		fonts.add(f);
 	}
 	
+	/**
+	 * returns a font from the registry with the given id of the font
+	 * @param id
+	 * @return
+	 */
 	public static TrueTypeFont GetFont(int id) {
 		return fonts.get(id);
 	}

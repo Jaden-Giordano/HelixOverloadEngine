@@ -1,36 +1,28 @@
 package com.base.engine.gameobject;
 
-import org.newdawn.slick.Image;
+import com.base.engine.SpriteSheet;
 
 public class Block extends RenderableObject {
 	
-	public static final int BLOCK_DEFAULT= 0;
-	public static final int BLOCK_DIRT = 1;
-	public static final int BLOCK_STONE = 2;
-	
 	protected int id;
-	protected String name;
 	
-	public Block(float x, float y, Image tex) {
-		super(x, y, tex);
-	}
-	
-	public Block SetID(int id) {
+	/**
+	 * Creates new Tile with given x, y, and id
+	 * @param x
+	 * @param y
+	 * @param id
+	 */
+	public Block(float x, float y, int id) {
+		super(x, y, SpriteSheet.GetSpriteSheet().getSprite(id, 0));
 		this.id = id;
-		return this;
 	}
 	
+	/**
+	 * returns the id of the block
+	 * @return
+	 */
 	public int GetID() {
 		return this.id;
-	}
-	
-	public Block SetName(String name) {
-		this.name = name;
-		return this;
-	}
-	
-	public String GetName() {
-		return this.name;
 	}
 
 }

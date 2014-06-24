@@ -1,6 +1,7 @@
 package com.base.handlers;
 
 import org.lwjgl.input.Keyboard;
+import org.lwjgl.input.Mouse;
 
 public class Input {
 
@@ -36,6 +37,11 @@ public class Input {
 		}
 	}
 	
+	/**
+	 * returns if the given key is pressed
+	 * @param key
+	 * @return
+	 */
 	public static boolean KeyPressed(int key) {
 		if (Keyboard.getEventKey() == key && Keyboard.getEventKeyState()) {
 			return true;
@@ -45,16 +51,46 @@ public class Input {
 		}
 	}
 	
+	/**
+	 * returns if the given key is released
+	 * @param key
+	 * @return
+	 */
 	public static boolean KeyReleased(int key) {
-		while (Keyboard.next()) {
-			if (Keyboard.getEventKey() == key) {
-				return false;
-			}
-			else {
-				return true;
-			}
+		if (Keyboard.getEventKey() == key && Keyboard.getEventKeyState()) {
+			return true;
 		}
-		return false;
+		else {
+			return false;
+		}
+	}
+	
+	/**
+	 * returns if the given mouse button is pressed
+	 * @param button
+	 * @return
+	 */
+	public static boolean MousePressed(int button) {
+		if (Mouse.getEventButton() == button && Mouse.getEventButtonState()) {
+			return true;
+		}
+		else {
+			return false;
+		}
+	}
+	
+	/**
+	 * returns if the given mouse button is released
+	 * @param button
+	 * @return
+	 */
+	public static boolean MouseReleased(int button) {
+		if (Mouse.getEventButton() == button && !Mouse.getEventButtonState()) {
+			return true;
+		}
+		else {
+			return false;
+		}
 	}
 	
 }

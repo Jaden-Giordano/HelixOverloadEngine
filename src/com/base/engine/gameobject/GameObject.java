@@ -5,7 +5,7 @@ public abstract class GameObject {
 	protected float x, y;
 	
 	/**
-	 * Initializes Normal GameObjects, Not Blocks
+	 * Initializes Normal GameObjects with given x, y position
 	 * @param x
 	 * @param y
 	 */
@@ -19,15 +19,36 @@ public abstract class GameObject {
 	public void Update() { }
 	
 	/**
-	 * All Game Objects affected by camera.
+	 * Draws objects
 	 */
 	public void Draw() { }
 	
+	/**
+	 * moves object with given x, y vector
+	 * @param x
+	 * @param y
+	 */
 	public void Move(float x, float y) {
 		this.x += x;
 		this.y += y;
 	}
-
+	
+	/**
+	 * returns the x position of the game object
+	 * @return
+	 */
+	public float GetX() {
+		return this.x;
+	}
+	
+	/**
+	 * returns the y position of the game object
+	 * @return
+	 */
+	public float GetY() {
+		return this.y;
+	}
+	
 	public boolean isPlayableCharacter() {
 		return false;
 	}
