@@ -2,9 +2,9 @@ package com.base.engine.gameobject;
 
 import java.awt.Rectangle;
 
-import com.base.engine.Transition;
 import com.base.game.Game;
 import com.base.handlers.FileHandler;
+import com.base.handlers.TransitionHandler;
 
 public class Warp extends RenderableObject {
 	
@@ -14,7 +14,7 @@ public class Warp extends RenderableObject {
 	
 	private boolean enterWarp;
 	
-	private Transition transition;
+	private int transID = -1;
 
 	/**
 	 * Creates a new warp with starting x, y coordinate and destination coordinate
@@ -29,8 +29,6 @@ public class Warp extends RenderableObject {
 		this.destY = destY;
 		worldWarp = false;
 		enterWarp = false;
-		
-		this.transition = new Transition(2000);
 	}
 	
 	public Warp(float x, float y, int destW) {
@@ -38,37 +36,33 @@ public class Warp extends RenderableObject {
 		this.destWorldId = destW;
 		worldWarp = true;
 		enterWarp = false;
-		
-		this.transition = new Transition(5000);
 	}
 	
 	/**
 	 * Checks if player collides and teleports to destination coordinate
 	 */
 	public void Update() {
-		if (enterWarp) {
-			transition.Update();
-		}
-		
 		if (PlayerCollision(Game.GetCurrentWorld().GetCurrentPlayer()) && !enterWarp) {
 			enterWarp = true;
+			transID = TransitionHandler.AddTransition(0, 2000);
 		}
 
-		if (this.transition.IsComplete() && enterWarp) {
-			if (!worldWarp) {
-				if (PlayerCollision(Game.GetCurrentWorld().GetCurrentPlayer())) {
-					Game.GetCurrentWorld().GetCurrentPlayer().Teleport(this.destX, this.destY);
+		if (transID != -1) {
+			if (TransitionHandler.GetTransition(transID).IsComplete() && enterWarp) {
+				if (!worldWarp) {
+					if (PlayerCollision(Game.GetCurrentWorld().GetCurrentPlayer())) {
+						Game.GetCurrentWorld().GetCurrentPlayer().Teleport(this.destX, this.destY);
+					}
 				}
-			}
-			else {
-				if (PlayerCollision(Game.GetCurrentWorld().GetCurrentPlayer())) {
-					Game.GetCurrentWorld().GetCurrentPlayer().Teleport(destWorldId);
+				else {
+					if (PlayerCollision(Game.GetCurrentWorld().GetCurrentPlayer())) {
+						Game.GetCurrentWorld().GetCurrentPlayer().Teleport(destWorldId);
+					}
 				}
+				TransitionHandler.RemoveTransition(transID);
+				transID = -1;
+				enterWarp = false;
 			}
-		}
-		
-		if (enterWarp) {
-			transition.Draw();
 		}
 	}
 	

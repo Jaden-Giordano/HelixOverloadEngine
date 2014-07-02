@@ -1,6 +1,6 @@
 package com.base.engine.gameobject;
 
-import com.base.engine.SpriteSheet;
+import com.base.handlers.SpriteSheetHandler;
 
 public class Block extends RenderableObject {
 	
@@ -13,7 +13,7 @@ public class Block extends RenderableObject {
 	 * @param id
 	 */
 	public Block(float x, float y, int id) {
-		super(x, y, SpriteSheet.GetSpriteSheet().getSprite(id, 0));
+		super(x, y, SpriteSheetHandler.GetSpriteSheet().getSprite(id%SpriteSheetHandler.GetSpriteSheet().getHorizontalCount(), id/SpriteSheetHandler.GetSpriteSheet().getHorizontalCount()));
 		this.id = id;
 	}
 	

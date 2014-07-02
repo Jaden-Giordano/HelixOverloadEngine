@@ -1,8 +1,7 @@
-package com.base.engine;
+package com.base.handlers;
 
-import com.base.handlers.FileHandler;
 
-public class SpriteSheet {
+public class SpriteSheetHandler {
 	
 	private static org.newdawn.slick.SpriteSheet worldSpr;
 	

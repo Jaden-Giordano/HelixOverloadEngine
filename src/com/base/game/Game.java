@@ -6,7 +6,9 @@ import java.util.ArrayList;
 import org.lwjgl.input.Keyboard;
 import org.lwjgl.input.Mouse;
 
+import com.base.engine.Main;
 import com.base.engine.World;
+import com.base.engine.gui.Button;
 import com.base.handlers.FileHandler;
 import com.base.handlers.GuiHandler;
 import com.base.handlers.Input;
@@ -27,6 +29,8 @@ public class Game {
 		debugState = 0;
 		
 		LoadWorlds();
+		
+		GuiHandler.AddButton(new Button(Main.SCREEN_WIDTH-48, Main.SCREEN_HEIGHT-128));
 	}
 	
 	/**
@@ -34,9 +38,11 @@ public class Game {
 	 * @throws IOException
 	 */
 	private void LoadWorlds() throws IOException {
+		World art = new World(FileHandler.LoadTileData("/assets/worlds/ART/huge"), FileHandler.LoadTileData("/assets/worlds/test/objtest"));
 		World test2 = new World(FileHandler.LoadTileData("/assets/worlds/test/largetest"), FileHandler.LoadTileData("/assets/worlds/test/objtest"));
 		World hi = new World(FileHandler.LoadTileData("/assets/worlds/Hi/hi"), FileHandler.LoadTileData("/assets/worlds/test/objtest"));
 		
+		worlds.add(art);
 		worlds.add(test2);
 		worlds.add(hi);
 		
@@ -69,6 +75,12 @@ public class Game {
 	 */
 	public void Update() {
 		worlds.get(currentWorld).Update();
+		if (GuiHandler.GetButton() != null) {
+			if (GuiHandler.GetButton().HasButtonBeenClicked()) {
+				currentWorld++;
+				currentWorld %= worlds.size();
+			}
+		}
 	}
 	
 	/**

@@ -136,5 +136,9 @@ public class GuiHandler {
 			elements[2].Draw();
 		}
 	}
+	
+	public static Button GetButton() {
+		return (Button) elements[2];
+	}
 
 }

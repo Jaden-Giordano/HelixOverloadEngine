@@ -6,6 +6,7 @@ import com.base.engine.gameobject.Block;
 import com.base.engine.gameobject.GameObject;
 import com.base.engine.gameobject.PlayableCharacter;
 import com.base.engine.gameobject.Warp;
+import com.base.handlers.SpriteSheetHandler;
 
 public class World {
 	
@@ -47,7 +48,7 @@ public class World {
 			for (int i = 0; i < objData.length; i++) {
 				for (int j = 0; j < objData[i].length; j++) {
 					if (objData[i][j] == 1) {
-						objs.add(new PlayableCharacter(i*32-data.length*32/2, j*32-data.length*32/2, new Animation(SpriteSheet.LoadSpriteSheet("/assets/animsets/player.png"))));
+						objs.add(new PlayableCharacter(i*32-data.length*32/2, j*32-data.length*32/2, new Animation(SpriteSheetHandler.LoadSpriteSheet("/assets/animsets/player.png"))));
 					}
 				}
 			}

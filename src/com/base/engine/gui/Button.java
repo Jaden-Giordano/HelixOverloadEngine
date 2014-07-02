@@ -5,14 +5,14 @@ import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL14;
 import org.newdawn.slick.Image;
 
+import com.base.engine.Main;
 import com.base.handlers.FileHandler;
-import com.base.handlers.GuiHandler;
 import com.base.handlers.Input;
 
 public class Button extends GuiElement {
 	
 	private Image img;
-	private boolean clicked, hover;
+	private boolean clicked, recentClick, hover;
 
 	/**
 	 * Creates new button on gui layer with given x, y position
@@ -23,6 +23,7 @@ public class Button extends GuiElement {
 		super(x, y);
 		img = FileHandler.LoadImage("/assets/gui/button.png");
 		clicked = false;
+		recentClick = false;
 		hover = false;
 	}
 	
@@ -31,11 +32,12 @@ public class Button extends GuiElement {
 	 */
 	public void GetInput() {
 		if (Input.MousePressed(org.newdawn.slick.Input.MOUSE_LEFT_BUTTON)) {
-			if ((Mouse.getX() >= this.x && Mouse.getX() <= this.x+48) && ((600-Mouse.getY()) >= this.y && (600-Mouse.getY()) <= this.y+48)) {
+			if ((Mouse.getX() >= this.x && Mouse.getX() <= this.x+48) && ((Main.SCREEN_HEIGHT-Mouse.getY()) >= this.y && (Main.SCREEN_HEIGHT-Mouse.getY()) <= this.y+48)) {
 				clicked = true;
 			}
 		}
-		if ((Mouse.getX() >= this.x && Mouse.getX() <= this.x+48) && ((600-Mouse.getY()) >= this.y && (600-Mouse.getY()) <= this.y+48)) {
+		
+		if ((Mouse.getX() >= this.x && Mouse.getX() <= this.x+48) && ((Main.SCREEN_HEIGHT-Mouse.getY()) >= this.y && (Main.SCREEN_HEIGHT-Mouse.getY()) <= this.y+48)) {
 			hover = true;
 		}
 		else {
@@ -48,7 +50,7 @@ public class Button extends GuiElement {
 	 */
 	public void Update() {
 		if (this.clicked) {
-			GuiHandler.AddMessage("You clicked the magical fucking button!");
+			recentClick = true;
 			clicked = false;
 		}
 	}
@@ -67,6 +69,14 @@ public class Button extends GuiElement {
 		else {
 			img.draw(this.x, this.y);
 		}
+	}
+	
+	public boolean HasButtonBeenClicked() {
+		if (recentClick) {
+			recentClick = false;
+			return true;
+		}
+		return false;
 	}
 
 }
